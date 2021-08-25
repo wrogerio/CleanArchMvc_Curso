@@ -1,12 +1,10 @@
-﻿using CleanArchMvc.Domain.Validation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CleanArchMvc.Domain.Validation;
 
 namespace CleanArchMvc.Domain.Entities
 {
     public sealed class Category : EntityBase
     {
-        public string Name { get; private set; }
-
         public Category(string name)
         {
             ValidateDomain(name);
@@ -14,22 +12,25 @@ namespace CleanArchMvc.Domain.Entities
 
         public Category(int id, string name)
         {
-            DomainExceptionValidation.When(id < 0, "Invalid Id Value");
+            DomainExceptionValidation.When(id <= 0, "Invalid Id Value");
             Id = id;
             ValidateDomain(name);
         }
+
+        public string Name { get; private set; }
+
+        public ICollection<Product> Products { get; set; }
 
         public void Update(string name)
         {
             ValidateDomain(name);
         }
 
-        public ICollection<Product> Products { get; set; }
-
         private void ValidateDomain(string name)
         {
             DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name. Name is required!");
-            DomainExceptionValidation.When(name != null && name.Length < 3, "Invalid name. To short, minimum 3 characters");
+            DomainExceptionValidation.When(name != null && name.Length < 3,
+                "Invalid name. To short, minimum 3 characters");
             Name = name;
         }
     }
